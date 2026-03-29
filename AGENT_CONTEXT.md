@@ -1,6 +1,6 @@
 # Agent Context
 
-Last updated: 2026-03-29 17:31 CDT
+Last updated: 2026-03-29 18:16 CDT
 
 Additional planning docs:
 
@@ -48,9 +48,28 @@ In low-data / low-coverage offline settings, the available transition data does 
 ### Recommended phased plan
 
 1. Validate low-data behavior on `TwoRoom` with random subsets.
-2. Test **fixed-rank** ablations first.
+2. Test **fixed-rank** ablations first using a shared warmup plus branch protocol.
 3. Test **count-based rank growth** vs **coverage-based rank growth**.
 4. Only then add **coverage-aware data curation** as an extension.
+
+### Important protocol correction for fixed-rank ablations
+
+Do **not** estimate a PCA basis from one encoder and then apply it to a
+different randomly initialized model from scratch.
+
+Reason:
+
+- the PCA basis lives in a specific encoder/projector coordinate system
+- cross-model basis transfer creates a coordinate mismatch
+
+For the main rank-SIGReg ablations, the correct protocol is:
+
+1. warm up on budget `b`
+2. estimate `mu_b, Q_b` from that warmup checkpoint on the same subset
+3. fork `full / pca-r4 / pca-r8 / pca-r16 / ...` from that same warmup
+
+The official full-data `TwoRoom` checkpoint can be used for quick exploratory
+pilots only, not for the main paper protocol.
 
 ## Immediate Experimental Objective
 
@@ -80,6 +99,13 @@ Subset runs:
 - `pct10`: `/data/rxm210041/stablewm/tworoom_pct10`, PID `1479145`
 - `pct15`: `/data/rxm210041/stablewm/tworoom_pct15`, PID `1479138`
 - `pct20`: `/data/rxm210041/stablewm/tworoom_pct20`, PID `1479137`
+
+Reproducibility assets already committed to the repo:
+
+- `repro/tworoom_subset_indices/seed42/pct05_episode_indices.npy`
+- `repro/tworoom_subset_indices/seed42/pct10_episode_indices.npy`
+- `repro/tworoom_subset_indices/seed42/pct15_episode_indices.npy`
+- `repro/tworoom_subset_indices/seed42/pct20_episode_indices.npy`
 
 Subset sizes:
 
@@ -176,7 +202,7 @@ The paper should aim to show:
 If you are continuing the method work rather than just monitoring jobs, the recommended order is:
 
 1. Finish the current `5/10/15/20%` random-subset epoch-10 validation pass.
-2. Implement and test **fixed-rank SIGReg** on `TwoRoom`.
+2. Implement and test **shared-warmup fixed-rank SIGReg** on `TwoRoom`.
 3. Add **coverage-gated rank growth**.
 4. Only after that, prototype **coverage-aware subset selection / dynamic curation**.
 
@@ -186,3 +212,5 @@ If you are continuing the method work rather than just monitoring jobs, the reco
 - Prefer the phrase **coverage-gated Gaussianization** or **supported-subspace Gaussianization** over generic “change the prior” wording.
 - Treat `TwoRoom` as the key low-diversity diagnostic environment.
 - Do not assume that better probing implies better planning; this mismatch is part of the actual scientific question.
+- Do not revive the older “official checkpoint basis plus from-scratch rank run”
+  protocol for the main ablation.

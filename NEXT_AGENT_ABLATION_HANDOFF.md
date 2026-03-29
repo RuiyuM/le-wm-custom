@@ -1,6 +1,6 @@
 # Next Agent Ablation Handoff
 
-Last updated: 2026-03-29 17:31 CDT
+Last updated: 2026-03-29 18:16 CDT
 
 ## What The Next Ablation Is
 
@@ -46,12 +46,34 @@ It is specifically:
 For each subset budget independently:
 
 1. choose subset (`5%`, `10%`, `15%`, `20%`)
-2. estimate a PCA subspace from that subset using the official `TwoRoom` checkpoint encoder
-3. save a fixed `mean + basis`
-4. train a new LeWM run from scratch on that subset
-5. apply SIGReg only on the projected latent
+2. train a shared warmup checkpoint on that subset with the original LeWM objective
+3. estimate a PCA subspace from that subset using the warmup checkpoint from the same budget
+4. save a fixed `mean + ordered basis family`
+5. fork multiple rank runs from the same warmup checkpoint
+6. apply SIGReg only on the projected latent in the branch runs
 
-This avoids using a random encoder to define the subspace and avoids unstable in-run PCA updates.
+This avoids using a random encoder to define the subspace while also avoiding
+the coordinate-system bug from cross-model basis transfer.
+
+## Important Correction: Basis Must Match The Encoder Coordinates
+
+Do **not** use this protocol for the main ablation:
+
+1. estimate `Q` from the official full-data checkpoint
+2. start a fresh random model from scratch
+3. regularize that fresh model with `Q`
+
+That procedure is not clean because PCA directions depend on the concrete
+encoder/projector latent coordinate system that produced them.
+
+The correct main-result protocol is:
+
+- warmup on the target budget
+- estimate `mu_b, Q_b` from that warmup
+- branch all rank runs from the same warmup checkpoint
+
+The official full-data checkpoint may still be used for quick exploratory
+pilots, but not for the main paper table.
 
 ## Current Repo State
 
@@ -86,6 +108,7 @@ The smallest future code path should do the following:
 
 - add a non-trainable projector module
 - load a saved PCA basis from disk
+- resume branch runs from a shared warmup checkpoint
 - project only the latent tensor used by SIGReg
 - leave `pred_loss` on full `192` dimensions
 
@@ -95,7 +118,7 @@ The exact detailed plan is in:
 
 ## Recommended Initial Rank Grid
 
-Suggested first-pass grid:
+Suggested first-pass grid after the shared warmup:
 
 - `5%`: `2, 4, 8, 16, 32`
 - `10%`: `4, 8, 16, 32, 64`
@@ -103,6 +126,13 @@ Suggested first-pass grid:
 - `20%`: `8, 16, 32, 64, 96`
 
 Always compare against the full-rank LeWM baseline for the same subset.
+Useful first control:
+
+- `random-r16` from the same warmup and same subset
+
+Possible later control:
+
+- `full-weaklambda`
 
 ## What To Look For
 
@@ -119,7 +149,11 @@ Priority order:
 1. read `AGENT_CONTEXT.md`
 2. read `RANK_SIGREG_MINIMAL_CHANGE_PLAN.md`
 3. verify the current branch and subset-support changes in `train.py` / `utils.py`
-4. implement fixed-subspace rank-SIGReg before touching curriculum rank or data curation
+4. implement shared-warmup fixed-subspace rank-SIGReg before touching curriculum rank or data curation
+
+Do not let another agent revert to the older “official checkpoint basis plus
+from-scratch rank runs” protocol. That is the main design error already
+identified.
 
 ## Important Framing
 
