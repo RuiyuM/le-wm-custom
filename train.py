@@ -4,6 +4,7 @@ from pathlib import Path
 
 import hydra
 import lightning as pl
+import numpy as np
 import stable_pretraining as spt
 import stable_worldmodel as swm
 import torch
@@ -12,7 +13,12 @@ from omegaconf import OmegaConf, open_dict
 
 from jepa import JEPA
 from module import ARPredictor, Embedder, MLP, SIGReg
-from utils import get_column_normalizer, get_img_preprocessor, ModelObjectCallBack
+from utils import (
+    get_column_normalizer,
+    get_img_preprocessor,
+    ModelObjectCallBack,
+    filter_dataset_by_episodes,
+)
 
 
 def lejepa_forward(self, batch, stage, cfg):
@@ -53,6 +59,30 @@ def run(cfg):
 
     dataset = swm.data.HDF5Dataset(**cfg.data.dataset, transform=None)
     transforms = [get_img_preprocessor(source='pixels', target='pixels', img_size=cfg.img_size)]
+    selected_episodes = None
+
+    subset_cfg = cfg.get("subset")
+    if subset_cfg:
+        if subset_cfg.get("indices_file"):
+            indices_path = Path(subset_cfg.indices_file).expanduser().resolve()
+            if indices_path.suffix == ".npy":
+                selected_episodes = np.load(indices_path)
+            else:
+                selected_episodes = np.loadtxt(indices_path, dtype=np.int64)
+        elif subset_cfg.get("fraction") is not None:
+            total_episodes = len(dataset.lengths)
+            keep_count = max(1, int(round(total_episodes * float(subset_cfg.fraction))))
+            rng = np.random.default_rng(int(subset_cfg.get("seed", cfg.seed)))
+            selected_episodes = np.sort(
+                rng.choice(np.arange(total_episodes), size=keep_count, replace=False)
+            )
+
+        if selected_episodes is not None:
+            dataset = filter_dataset_by_episodes(dataset, selected_episodes)
+            print(
+                f"Subset active: kept {len(selected_episodes)} episodes, "
+                f"{len(dataset)} clips."
+            )
     
     with open_dict(cfg):
         for col in cfg.data.dataset.keys_to_load:
@@ -155,6 +185,8 @@ def run(cfg):
     run_dir.mkdir(parents=True, exist_ok=True)
     with open(run_dir / "config.yaml", "w") as f:
         OmegaConf.save(cfg, f)
+    if selected_episodes is not None:
+        np.save(run_dir / "subset_episode_indices.npy", selected_episodes)
 
     object_dump_callback = ModelObjectCallBack(
         dirpath=run_dir, filename=cfg.output_model_name, epoch_interval=1,

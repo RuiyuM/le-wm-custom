@@ -3,11 +3,18 @@ import torch
 from pathlib import Path
 from stable_pretraining import data as dt
 from lightning.pytorch.callbacks import Callback
+from torchvision.transforms.v2 import functional as v2f
 
 def get_img_preprocessor(source: str, target: str, img_size: int = 224):
     imagenet_stats = dt.dataset_stats.ImageNet
     to_image = dt.transforms.ToImage(**imagenet_stats, source=source, target=target)
-    resize = dt.transforms.Resize(img_size, source=source, target=target)
+
+    def resize_fn(x):
+        if x.shape[-2:] == (img_size, img_size):
+            return x
+        return v2f.resize(x, size=[img_size, img_size], antialias=True)
+
+    resize = dt.transforms.WrapTorchTransform(resize_fn, source=target, target=target)
     return dt.transforms.Compose(to_image, resize)
 
 
@@ -24,6 +31,14 @@ def get_column_normalizer(dataset, source: str, target: str):
 
     normalizer = dt.transforms.WrapTorchTransform(norm_fn, source=source, target=target)
     return normalizer
+
+
+def filter_dataset_by_episodes(dataset, keep_episodes):
+    keep = set(int(ep) for ep in np.asarray(keep_episodes).tolist())
+    dataset.clip_indices = [
+        (ep_idx, start) for ep_idx, start in dataset.clip_indices if ep_idx in keep
+    ]
+    return dataset
 
 class ModelObjectCallBack(Callback):
     """Callback to pickle model object after each epoch."""
