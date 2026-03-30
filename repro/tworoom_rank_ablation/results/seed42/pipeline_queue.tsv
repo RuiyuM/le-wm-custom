@@ -25,8 +25,8 @@ eval__tworoom_rank_seed42_pct20_random-r16_e20	eval-branch	pct20	random-r16	pend
 eval__tworoom_rank_seed42_pct20_warmup	eval-warmup	pct20		pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct20_warmup.log
 pct05_fit-pca	fit-pca	pct05		completed	11208	/workspace/stablewm/logs/tworoom_rank_ablation/pct05_fit-pca.log
 pct05_make-random	make-random	pct05		completed	12480	/workspace/stablewm/logs/tworoom_rank_ablation/pct05_make-random.log
-pct10_fit-pca	fit-pca	pct10		running	39709	/workspace/stablewm/logs/tworoom_rank_ablation/pct10_fit-pca.log
-pct10_make-random	make-random	pct10		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.log
+pct10_fit-pca	fit-pca	pct10		completed	39709	/workspace/stablewm/logs/tworoom_rank_ablation/pct10_fit-pca.log
+pct10_make-random	make-random	pct10		running	40951	/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.log
 pct15_fit-pca	fit-pca	pct15		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct15_fit-pca.log
 pct15_make-random	make-random	pct15		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct15_make-random.log
 pct20_fit-pca	fit-pca	pct20		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct20_fit-pca.log

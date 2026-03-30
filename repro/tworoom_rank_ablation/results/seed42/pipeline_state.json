@@ -1,9 +1,9 @@
 {
   "gpu_stats": {
-    "memory_free_mib": 36907,
+    "memory_free_mib": 39704,
     "memory_total_mib": 97251,
-    "memory_used_mib": 60344,
-    "util_pct": 3
+    "memory_used_mib": 57547,
+    "util_pct": 4
   },
   "jobs": {
     "eval__tworoom_rank_seed42_pct05_pca-r16_e20": {
@@ -807,7 +807,7 @@
         "tworoom_rank_seed42_pct10_warmup"
       ],
       "failure_reason": null,
-      "finished_at": null,
+      "finished_at": 1774852184.7606177,
       "label": "pct10_fit-pca",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct10_fit-pca.log",
       "needs_gpu": true,
@@ -815,11 +815,11 @@
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct10_fit-pca.pid",
       "priority": 90,
       "retry_count": 0,
-      "returncode": null,
+      "returncode": 0,
       "run_name": null,
       "stage": "fit-pca",
       "started_at": 1774851958.7004454,
-      "status": "running",
+      "status": "completed",
       "variant": null
     },
     "pct10_make-random": {
@@ -841,15 +841,15 @@
       "label": "pct10_make-random",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.log",
       "needs_gpu": false,
-      "pid": null,
+      "pid": 40951,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.pid",
       "priority": 85,
       "retry_count": 0,
       "returncode": null,
       "run_name": null,
       "stage": "make-random",
-      "started_at": null,
-      "status": "pending",
+      "started_at": 1774852185.8978643,
+      "status": "running",
       "variant": null
     },
     "pct15_fit-pca": {
@@ -1830,5 +1830,5 @@
   "python_bin": "/workspace/le-wm-custom/.venv/bin/python",
   "repo_root": "/workspace/le-wm-custom",
   "stablewm_home": "/workspace/stablewm",
-  "timestamp": "2026-03-30T06:29:24Z"
+  "timestamp": "2026-03-30T06:29:45Z"
 }
