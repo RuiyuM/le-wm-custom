@@ -10,7 +10,7 @@ tworoom_rank_seed42_pct10_pca-r32_e20	eval-branch	pct10	pca-r32	pending
 tworoom_rank_seed42_pct10_pca-r4_e20	eval-branch	pct10	pca-r4	pending	
 tworoom_rank_seed42_pct10_pca-r8_e20	eval-branch	pct10	pca-r8	pending	
 tworoom_rank_seed42_pct10_random-r16_e20	eval-branch	pct10	random-r16	pending	
-tworoom_rank_seed42_pct10_warmup	eval-warmup	pct10		pending	
+tworoom_rank_seed42_pct10_warmup	eval-warmup	pct10		completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct10_warmup/eval_results.txt
 tworoom_rank_seed42_pct15_pca-r16_e20	eval-branch	pct15	pca-r16	pending	
 tworoom_rank_seed42_pct15_pca-r32_e20	eval-branch	pct15	pca-r32	pending	
 tworoom_rank_seed42_pct15_pca-r4_e20	eval-branch	pct15	pca-r4	pending	
