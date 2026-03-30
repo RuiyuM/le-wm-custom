@@ -46,7 +46,10 @@ OOM_PATTERNS = (
 )
 
 BUDGETS = ("pct05", "pct10", "pct15", "pct20")
-VARIANTS = ("pca-r4", "pca-r8", "pca-r16", "pca-r32", "random-r16")
+BASE_VARIANTS = ("pca-r4", "pca-r8", "pca-r16", "pca-r32", "random-r16")
+EXTRA_VARIANTS_BY_BUDGET = {
+    "pct05": ("pca-r64", "pca-r128"),
+}
 
 
 @dataclass
@@ -108,6 +111,10 @@ def warmup_run_name(budget: str) -> str:
 
 def branch_run_name(budget: str, variant: str) -> str:
     return f"tworoom_rank_seed42_{budget}_{variant}_e20"
+
+
+def variants_for_budget(budget: str) -> tuple[str, ...]:
+    return BASE_VARIANTS + EXTRA_VARIANTS_BY_BUDGET.get(budget, ())
 
 
 def train_extra_args_for(run_name: str) -> str:
@@ -242,7 +249,7 @@ def build_jobs() -> dict[str, Job]:
             needs_gpu=True,
             priority=55 + budget_bonus,
         )
-        for variant in VARIANTS:
+        for variant in variants_for_budget(budget):
             branch_run = branch_run_name(budget, variant)
             branch_label = branch_run
             jobs[branch_label] = Job(
