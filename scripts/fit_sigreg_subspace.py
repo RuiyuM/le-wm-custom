@@ -34,7 +34,7 @@ def parse_args():
     parser.add_argument("--subset-indices-file", type=Path, default=None)
     parser.add_argument("--max-batches", type=int, default=100)
     parser.add_argument("--batch-size", type=int, default=None)
-    parser.add_argument("--num-workers", type=int, default=0)
+    parser.add_argument("--num-workers", type=int, default=None)
     parser.add_argument(
         "--device",
         type=str,
@@ -74,8 +74,9 @@ def main() -> None:
     loader_cfg = dict(cfg.loader)
     if args.batch_size is not None:
         loader_cfg["batch_size"] = int(args.batch_size)
-    loader_cfg["num_workers"] = int(args.num_workers)
-    if loader_cfg["num_workers"] == 0:
+    if args.num_workers is not None:
+        loader_cfg["num_workers"] = int(args.num_workers)
+    if int(loader_cfg.get("num_workers", 0)) == 0:
         loader_cfg.pop("prefetch_factor", None)
         loader_cfg["persistent_workers"] = False
 
