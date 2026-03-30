@@ -3,7 +3,7 @@
     "memory_free_mib": 13895,
     "memory_total_mib": 97251,
     "memory_used_mib": 83356,
-    "util_pct": 47
+    "util_pct": 0
   },
   "jobs": {
     "eval__tworoom_rank_seed42_pct05_pca-r16_e20": {
@@ -351,7 +351,7 @@
         "tworoom_rank_seed42_pct10_warmup"
       ],
       "failure_reason": null,
-      "finished_at": null,
+      "finished_at": 1774874826.5124567,
       "label": "eval__tworoom_rank_seed42_pct10_warmup",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_warmup.log",
       "needs_gpu": true,
@@ -359,11 +359,11 @@
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_warmup.pid",
       "priority": 55,
       "retry_count": 0,
-      "returncode": null,
+      "returncode": 0,
       "run_name": "tworoom_rank_seed42_pct10_warmup",
       "stage": "eval-warmup",
       "started_at": 1774871053.593055,
-      "status": "running",
+      "status": "completed",
       "variant": null
     },
     "eval__tworoom_rank_seed42_pct15_pca-r16_e20": {
@@ -535,15 +535,15 @@
       "label": "eval__tworoom_rank_seed42_pct15_warmup",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_warmup.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 181419,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_warmup.pid",
       "priority": 55,
       "retry_count": 0,
       "returncode": null,
       "run_name": "tworoom_rank_seed42_pct15_warmup",
       "stage": "eval-warmup",
-      "started_at": null,
-      "status": "pending",
+      "started_at": 1774874868.4011502,
+      "status": "running",
       "variant": null
     },
     "eval__tworoom_rank_seed42_pct20_pca-r16_e20": {
@@ -1830,5 +1830,5 @@
   "python_bin": "/workspace/le-wm-custom/.venv/bin/python",
   "repo_root": "/workspace/le-wm-custom",
   "stablewm_home": "/workspace/stablewm",
-  "timestamp": "2026-03-30T12:46:46Z"
+  "timestamp": "2026-03-30T13:47:20Z"
 }

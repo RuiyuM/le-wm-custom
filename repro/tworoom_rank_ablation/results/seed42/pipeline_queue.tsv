@@ -10,13 +10,13 @@ eval__tworoom_rank_seed42_pct10_pca-r32_e20	eval-branch	pct10	pca-r32	pending		/
 eval__tworoom_rank_seed42_pct10_pca-r4_e20	eval-branch	pct10	pca-r4	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_pca-r4_e20.log
 eval__tworoom_rank_seed42_pct10_pca-r8_e20	eval-branch	pct10	pca-r8	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_pca-r8_e20.log
 eval__tworoom_rank_seed42_pct10_random-r16_e20	eval-branch	pct10	random-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_random-r16_e20.log
-eval__tworoom_rank_seed42_pct10_warmup	eval-warmup	pct10		running	155603	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_warmup.log
+eval__tworoom_rank_seed42_pct10_warmup	eval-warmup	pct10		completed	155603	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_warmup.log
 eval__tworoom_rank_seed42_pct15_pca-r16_e20	eval-branch	pct15	pca-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_pca-r16_e20.log
 eval__tworoom_rank_seed42_pct15_pca-r32_e20	eval-branch	pct15	pca-r32	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_pca-r32_e20.log
 eval__tworoom_rank_seed42_pct15_pca-r4_e20	eval-branch	pct15	pca-r4	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_pca-r4_e20.log
 eval__tworoom_rank_seed42_pct15_pca-r8_e20	eval-branch	pct15	pca-r8	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_pca-r8_e20.log
 eval__tworoom_rank_seed42_pct15_random-r16_e20	eval-branch	pct15	random-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_random-r16_e20.log
-eval__tworoom_rank_seed42_pct15_warmup	eval-warmup	pct15		pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_warmup.log
+eval__tworoom_rank_seed42_pct15_warmup	eval-warmup	pct15		running	181419	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct15_warmup.log
 eval__tworoom_rank_seed42_pct20_pca-r16_e20	eval-branch	pct20	pca-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct20_pca-r16_e20.log
 eval__tworoom_rank_seed42_pct20_pca-r32_e20	eval-branch	pct20	pca-r32	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct20_pca-r32_e20.log
 eval__tworoom_rank_seed42_pct20_pca-r4_e20	eval-branch	pct20	pca-r4	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct20_pca-r4_e20.log
