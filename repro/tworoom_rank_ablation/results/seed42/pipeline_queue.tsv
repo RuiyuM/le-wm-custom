@@ -1,8 +1,8 @@
 label	stage	budget	variant	status	pid	log_path
 eval__tworoom_rank_seed42_pct05_pca-r16_e20	eval-branch	pct05	pca-r16	completed	54752	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r16_e20.log
-eval__tworoom_rank_seed42_pct05_pca-r32_e20	eval-branch	pct05	pca-r32	running	77898	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r32_e20.log
+eval__tworoom_rank_seed42_pct05_pca-r32_e20	eval-branch	pct05	pca-r32	completed	77898	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r32_e20.log
 eval__tworoom_rank_seed42_pct05_pca-r4_e20	eval-branch	pct05	pca-r4	completed	35646	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r4_e20.log
-eval__tworoom_rank_seed42_pct05_pca-r8_e20	eval-branch	pct05	pca-r8	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r8_e20.log
+eval__tworoom_rank_seed42_pct05_pca-r8_e20	eval-branch	pct05	pca-r8	running	101773	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r8_e20.log
 eval__tworoom_rank_seed42_pct05_random-r16_e20	eval-branch	pct05	random-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_random-r16_e20.log
 eval__tworoom_rank_seed42_pct05_warmup	eval-warmup	pct05		completed	11951	/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_warmup.log
 eval__tworoom_rank_seed42_pct10_pca-r16_e20	eval-branch	pct10	pca-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct10_pca-r16_e20.log
@@ -29,7 +29,7 @@ pct10_fit-pca	fit-pca	pct10		completed	39709	/workspace/stablewm/logs/tworoom_ra
 pct10_make-random	make-random	pct10		completed	40951	/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.log
 pct15_fit-pca	fit-pca	pct15		completed	70938	/workspace/stablewm/logs/tworoom_rank_ablation/pct15_fit-pca.log
 pct15_make-random	make-random	pct15		completed	73257	/workspace/stablewm/logs/tworoom_rank_ablation/pct15_make-random.log
-pct20_fit-pca	fit-pca	pct20		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct20_fit-pca.log
+pct20_fit-pca	fit-pca	pct20		running	105597	/workspace/stablewm/logs/tworoom_rank_ablation/pct20_fit-pca.log
 pct20_make-random	make-random	pct20		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct20_make-random.log
 tworoom_rank_seed42_pct05_pca-r16_e20	branch	pct05	pca-r16	completed	13799	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r16_e20.log
 tworoom_rank_seed42_pct05_pca-r32_e20	branch	pct05	pca-r32	completed	13815	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r32_e20.log
@@ -38,15 +38,15 @@ tworoom_rank_seed42_pct05_pca-r8_e20	branch	pct05	pca-r8	completed	35353	/worksp
 tworoom_rank_seed42_pct05_random-r16_e20	branch	pct05	random-r16	completed	39513	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_random-r16_e20.log
 tworoom_rank_seed42_pct05_warmup	warmup	pct05		completed	3673	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_warmup.log
 tworoom_rank_seed42_pct10_pca-r16_e20	branch	pct10	pca-r16	running	41253	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r16_e20.log
-tworoom_rank_seed42_pct10_pca-r32_e20	branch	pct10	pca-r32	running	41254	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r32_e20.log
+tworoom_rank_seed42_pct10_pca-r32_e20	branch	pct10	pca-r32	completed	41254	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r32_e20.log
 tworoom_rank_seed42_pct10_pca-r4_e20	branch	pct10	pca-r4	running	68280	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r4_e20.log
 tworoom_rank_seed42_pct10_pca-r8_e20	branch	pct10	pca-r8	running	71529	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r8_e20.log
 tworoom_rank_seed42_pct10_random-r16_e20	branch	pct10	random-r16	running	78398	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_random-r16_e20.log
 tworoom_rank_seed42_pct10_warmup	warmup	pct10		completed	7830	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_warmup.log
-tworoom_rank_seed42_pct15_pca-r16_e20	branch	pct15	pca-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r16_e20.log
+tworoom_rank_seed42_pct15_pca-r16_e20	branch	pct15	pca-r16	running	102223	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r16_e20.log
 tworoom_rank_seed42_pct15_pca-r32_e20	branch	pct15	pca-r32	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r32_e20.log
 tworoom_rank_seed42_pct15_pca-r4_e20	branch	pct15	pca-r4	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r4_e20.log
-tworoom_rank_seed42_pct15_pca-r8_e20	branch	pct15	pca-r8	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r8_e20.log
+tworoom_rank_seed42_pct15_pca-r8_e20	branch	pct15	pca-r8	running	103343	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_pca-r8_e20.log
 tworoom_rank_seed42_pct15_random-r16_e20	branch	pct15	random-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_random-r16_e20.log
 tworoom_rank_seed42_pct15_warmup	warmup	pct15		completed	7831	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_warmup.log
 tworoom_rank_seed42_pct20_pca-r16_e20	branch	pct20	pca-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_pca-r16_e20.log
@@ -54,4 +54,4 @@ tworoom_rank_seed42_pct20_pca-r32_e20	branch	pct20	pca-r32	pending		/workspace/s
 tworoom_rank_seed42_pct20_pca-r4_e20	branch	pct20	pca-r4	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_pca-r4_e20.log
 tworoom_rank_seed42_pct20_pca-r8_e20	branch	pct20	pca-r8	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_pca-r8_e20.log
 tworoom_rank_seed42_pct20_random-r16_e20	branch	pct20	random-r16	pending		/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_random-r16_e20.log
-tworoom_rank_seed42_pct20_warmup	warmup	pct20		running	7837	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_warmup.log
+tworoom_rank_seed42_pct20_warmup	warmup	pct20		completed	7837	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct20_warmup.log
