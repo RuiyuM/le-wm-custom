@@ -29,8 +29,8 @@ pct10_fit-pca	fit-pca	pct10		completed	39709	/workspace/stablewm/logs/tworoom_ra
 pct10_make-random	make-random	pct10		completed	40951	/workspace/stablewm/logs/tworoom_rank_ablation/pct10_make-random.log
 pct15_fit-pca	fit-pca	pct15		completed	70938	/workspace/stablewm/logs/tworoom_rank_ablation/pct15_fit-pca.log
 pct15_make-random	make-random	pct15		completed	73257	/workspace/stablewm/logs/tworoom_rank_ablation/pct15_make-random.log
-pct20_fit-pca	fit-pca	pct20		running	105597	/workspace/stablewm/logs/tworoom_rank_ablation/pct20_fit-pca.log
-pct20_make-random	make-random	pct20		pending		/workspace/stablewm/logs/tworoom_rank_ablation/pct20_make-random.log
+pct20_fit-pca	fit-pca	pct20		completed	105597	/workspace/stablewm/logs/tworoom_rank_ablation/pct20_fit-pca.log
+pct20_make-random	make-random	pct20		running	108250	/workspace/stablewm/logs/tworoom_rank_ablation/pct20_make-random.log
 tworoom_rank_seed42_pct05_pca-r16_e20	branch	pct05	pca-r16	completed	13799	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r16_e20.log
 tworoom_rank_seed42_pct05_pca-r32_e20	branch	pct05	pca-r32	completed	13815	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r32_e20.log
 tworoom_rank_seed42_pct05_pca-r4_e20	branch	pct05	pca-r4	completed	13831	/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r4_e20.log
