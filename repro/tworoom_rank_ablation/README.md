@@ -23,6 +23,11 @@ Use:
 
 `scripts/run_tworoom_rank_ablation.sh`
 
+For the full explicit `seed42` command list across `pct05 / pct10 / pct15 /
+pct20`, see:
+
+`repro/tworoom_rank_ablation/seed42_commands.sh`
+
 It supports:
 
 - `warmup`
@@ -81,13 +86,10 @@ These commands keep:
 
 ### Other budgets
 
-Repeat the same pattern for:
+The exact command templates for the remaining budgets are already written out in
+`repro/tworoom_rank_ablation/seed42_commands.sh`.
 
-- `pct10`
-- `pct15`
-- `pct20`
-
-using the corresponding subset indices from:
+Those commands reuse:
 
 - `repro/tworoom_subset_indices/seed42/pct10_episode_indices.npy`
 - `repro/tworoom_subset_indices/seed42/pct15_episode_indices.npy`
