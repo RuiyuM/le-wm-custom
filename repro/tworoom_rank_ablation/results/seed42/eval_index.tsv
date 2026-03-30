@@ -1,4 +1,8 @@
 run_name	stage	budget	variant	status	repo_result_path
+tworoom_rank_seed42_pct05_e1_pca-r128_e10	eval-branch	pct05	pca-r128	pending	
+tworoom_rank_seed42_pct05_e1_pca-r64_e10	eval-branch	pct05	pca-r64	pending	
+tworoom_rank_seed42_pct05_e1_random-r128_e10	eval-branch	pct05	random-r128	pending	
+tworoom_rank_seed42_pct05_e1_random-r64_e10	eval-branch	pct05	random-r64	pending	
 tworoom_rank_seed42_pct05_pca-r128_e20	eval-branch	pct05	pca-r128	pending	
 tworoom_rank_seed42_pct05_pca-r16_e20	eval-branch	pct05	pca-r16	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_pca-r16_e20/eval_results.txt
 tworoom_rank_seed42_pct05_pca-r32_e20	eval-branch	pct05	pca-r32	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_pca-r32_e20/eval_results.txt
@@ -7,21 +11,25 @@ tworoom_rank_seed42_pct05_pca-r64_e20	eval-branch	pct05	pca-r64	pending
 tworoom_rank_seed42_pct05_pca-r8_e20	eval-branch	pct05	pca-r8	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_pca-r8_e20/eval_results.txt
 tworoom_rank_seed42_pct05_random-r16_e20	eval-branch	pct05	random-r16	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_random-r16_e20/eval_results.txt
 tworoom_rank_seed42_pct05_warmup	eval-warmup	pct05		completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_warmup/eval_results.txt
+tworoom_rank_seed42_pct05_warmup_e2_eval	eval-warmup-epoch	pct05	warmup-e2	running	
+tworoom_rank_seed42_pct05_warmup_e4_eval	eval-warmup-epoch	pct05	warmup-e4	running	
+tworoom_rank_seed42_pct05_warmup_e6_eval	eval-warmup-epoch	pct05	warmup-e6	running	
+tworoom_rank_seed42_pct05_warmup_e8_eval	eval-warmup-epoch	pct05	warmup-e8	pending	
 tworoom_rank_seed42_pct10_pca-r16_e20	eval-branch	pct10	pca-r16	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct10_pca-r16_e20/eval_results.txt
-tworoom_rank_seed42_pct10_pca-r32_e20	eval-branch	pct10	pca-r32	running	
-tworoom_rank_seed42_pct10_pca-r4_e20	eval-branch	pct10	pca-r4	pending	
-tworoom_rank_seed42_pct10_pca-r8_e20	eval-branch	pct10	pca-r8	pending	
-tworoom_rank_seed42_pct10_random-r16_e20	eval-branch	pct10	random-r16	pending	
+tworoom_rank_seed42_pct10_pca-r32_e20	eval-branch	pct10	pca-r32	cancelled	
+tworoom_rank_seed42_pct10_pca-r4_e20	eval-branch	pct10	pca-r4	cancelled	
+tworoom_rank_seed42_pct10_pca-r8_e20	eval-branch	pct10	pca-r8	cancelled	
+tworoom_rank_seed42_pct10_random-r16_e20	eval-branch	pct10	random-r16	cancelled	
 tworoom_rank_seed42_pct10_warmup	eval-warmup	pct10		completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct10_warmup/eval_results.txt
-tworoom_rank_seed42_pct15_pca-r16_e20	eval-branch	pct15	pca-r16	pending	
-tworoom_rank_seed42_pct15_pca-r32_e20	eval-branch	pct15	pca-r32	pending	
-tworoom_rank_seed42_pct15_pca-r4_e20	eval-branch	pct15	pca-r4	pending	
-tworoom_rank_seed42_pct15_pca-r8_e20	eval-branch	pct15	pca-r8	pending	
-tworoom_rank_seed42_pct15_random-r16_e20	eval-branch	pct15	random-r16	pending	
+tworoom_rank_seed42_pct15_pca-r16_e20	eval-branch	pct15	pca-r16	cancelled	
+tworoom_rank_seed42_pct15_pca-r32_e20	eval-branch	pct15	pca-r32	cancelled	
+tworoom_rank_seed42_pct15_pca-r4_e20	eval-branch	pct15	pca-r4	cancelled	
+tworoom_rank_seed42_pct15_pca-r8_e20	eval-branch	pct15	pca-r8	cancelled	
+tworoom_rank_seed42_pct15_random-r16_e20	eval-branch	pct15	random-r16	cancelled	
 tworoom_rank_seed42_pct15_warmup	eval-warmup	pct15		completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct15_warmup/eval_results.txt
-tworoom_rank_seed42_pct20_pca-r16_e20	eval-branch	pct20	pca-r16	pending	
-tworoom_rank_seed42_pct20_pca-r32_e20	eval-branch	pct20	pca-r32	pending	
-tworoom_rank_seed42_pct20_pca-r4_e20	eval-branch	pct20	pca-r4	pending	
-tworoom_rank_seed42_pct20_pca-r8_e20	eval-branch	pct20	pca-r8	pending	
-tworoom_rank_seed42_pct20_random-r16_e20	eval-branch	pct20	random-r16	pending	
+tworoom_rank_seed42_pct20_pca-r16_e20	eval-branch	pct20	pca-r16	cancelled	
+tworoom_rank_seed42_pct20_pca-r32_e20	eval-branch	pct20	pca-r32	cancelled	
+tworoom_rank_seed42_pct20_pca-r4_e20	eval-branch	pct20	pca-r4	cancelled	
+tworoom_rank_seed42_pct20_pca-r8_e20	eval-branch	pct20	pca-r8	cancelled	
+tworoom_rank_seed42_pct20_random-r16_e20	eval-branch	pct20	random-r16	cancelled	
 tworoom_rank_seed42_pct20_warmup	eval-warmup	pct20		completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct20_warmup/eval_results.txt
