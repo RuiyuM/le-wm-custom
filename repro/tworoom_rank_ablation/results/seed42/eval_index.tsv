@@ -1,5 +1,5 @@
 run_name	stage	budget	variant	status	repo_result_path
-tworoom_rank_seed42_pct05_pca-r16_e20	eval-branch	pct05	pca-r16	running	
+tworoom_rank_seed42_pct05_pca-r16_e20	eval-branch	pct05	pca-r16	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_pca-r16_e20/eval_results.txt
 tworoom_rank_seed42_pct05_pca-r32_e20	eval-branch	pct05	pca-r32	pending	
 tworoom_rank_seed42_pct05_pca-r4_e20	eval-branch	pct05	pca-r4	completed	repro/tworoom_rank_ablation/results/seed42/tworoom_rank_seed42_pct05_pca-r4_e20/eval_results.txt
 tworoom_rank_seed42_pct05_pca-r8_e20	eval-branch	pct05	pca-r8	pending	
