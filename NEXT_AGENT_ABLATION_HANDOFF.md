@@ -1,6 +1,6 @@
 # Next Agent Ablation Handoff
 
-Last updated: 2026-03-29 18:16 CDT
+Last updated: 2026-03-29 21:04 CDT
 
 ## What The Next Ablation Is
 
@@ -74,6 +74,63 @@ The correct main-result protocol is:
 
 The official full-data checkpoint may still be used for quick exploratory
 pilots, but not for the main paper table.
+
+## Canonical Addendum For The Next Ablation
+
+For the next execution round, ignore dynamic curation. This ablation is
+**rank-only**.
+
+Freeze the following decisions unless there is an explicit reason to change
+them:
+
+1. Warmup source:
+   - reuse the current `epoch 10` full-rank subset runs as `W_5`, `W_10`,
+     `W_15`, `W_20` if they finish cleanly
+   - only rerun a warmup for budget `b` if the current `epoch 10` checkpoint
+     for that budget is missing or unusable
+2. PCA fitting:
+   - use the same subset and the same budget's warmup checkpoint
+   - use `emb` latents from the **train split only**
+   - fit **centered PCA**
+   - do **not** whiten
+   - fit one ordered family `mu_b, Q_b` per budget
+3. Mandatory branch runs for each budget:
+   - `full`
+   - `pca-r*` from the planned rank grid
+   - `random-r16`
+4. Branch stopping rule:
+   - every branch run starts from `W_b`
+   - every branch run gets the **same additional training budget**
+   - V1 default: train **10 additional epochs**, i.e. branch from warmup
+     `epoch 10` to target total `epoch 20`
+5. Model invariants:
+   - latent width stays `192`
+   - `pred_loss` stays on full `192D`
+   - only the SIGReg path is projected
+
+Recommended naming:
+
+- warmup dirs:
+  - `tworoom_pct05`
+  - `tworoom_pct10`
+  - `tworoom_pct15`
+  - `tworoom_pct20`
+- basis files:
+  - `repro/tworoom_subspaces/seed42/pct05_warmup_e10_pca.pt`
+  - `repro/tworoom_subspaces/seed42/pct10_warmup_e10_pca.pt`
+  - `repro/tworoom_subspaces/seed42/pct15_warmup_e10_pca.pt`
+  - `repro/tworoom_subspaces/seed42/pct20_warmup_e10_pca.pt`
+- branch run dirs:
+  - `tworoom_pct05_pca_r16_from_e10`
+  - `tworoom_pct10_random_r16_from_e10`
+  - `tworoom_pct15_full_from_e10`
+
+Do not expand scope in this round:
+
+- do not add dynamic curation
+- do not refresh PCA during training
+- do not use the official full-data checkpoint as the basis source for the main table
+- do not compare runs that start from different warmup checkpoints within the same budget
 
 ## Current Repo State
 

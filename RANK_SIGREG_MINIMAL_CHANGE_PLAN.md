@@ -1,6 +1,6 @@
 # Rank-SIGReg Minimal Change Plan
 
-Last updated: 2026-03-29 18:16 CDT
+Last updated: 2026-03-29 21:04 CDT
 
 ## Goal
 
@@ -76,6 +76,79 @@ After branching, the encoder continues to update, so this is best described as:
 
 This is acceptable for V1 and much cleaner than cross-model basis transfer or
 online PCA refresh.
+
+## Canonical Execution Addendum
+
+For the next execution round, freeze the following implementation choices:
+
+### Warmup source
+
+Use the current `epoch 10` full-rank subset runs as the default warmups:
+
+- `W_5`: `tworoom_pct05`
+- `W_10`: `tworoom_pct10`
+- `W_15`: `tworoom_pct15`
+- `W_20`: `tworoom_pct20`
+
+Only rerun a warmup for budget `b` if the corresponding `epoch 10` checkpoint is
+missing or unusable.
+
+### PCA fitting details
+
+For each budget `b`:
+
+- use the same subset `S_b`
+- use the warmup checkpoint `W_b`
+- collect `emb` latents from the **train split only**
+- fit **centered PCA**
+- do **not** whiten
+- save exactly one ordered family `mu_b, Q_b`
+
+Within a budget, all branch runs must share that same ordered basis family.
+
+### Mandatory first branch set
+
+For each budget, the first required branch set is:
+
+- `full`
+- the planned `pca-r*` rank sweep
+- `random-r16`
+
+`full-weaklambda` is a later control, not mandatory in the first pass.
+
+### Branch stopping rule
+
+Every branch run:
+
+- starts from the same warmup checkpoint `W_b`
+- uses the same subset `S_b`
+- receives the same additional training budget
+
+V1 default:
+
+- branch from warmup `epoch 10`
+- train **10 additional epochs**
+- target total training horizon: `epoch 20`
+
+This keeps within-budget comparisons fair without introducing dynamic stopping
+logic.
+
+### Naming convention
+
+Recommended basis files:
+
+- `repro/tworoom_subspaces/seed42/pct05_warmup_e10_pca.pt`
+- `repro/tworoom_subspaces/seed42/pct10_warmup_e10_pca.pt`
+- `repro/tworoom_subspaces/seed42/pct15_warmup_e10_pca.pt`
+- `repro/tworoom_subspaces/seed42/pct20_warmup_e10_pca.pt`
+
+Recommended branch run dirs:
+
+- `tworoom_pct05_full_from_e10`
+- `tworoom_pct05_pca_r16_from_e10`
+- `tworoom_pct05_random_r16_from_e10`
+
+and similarly for `10%`, `15%`, `20%`.
 
 ## What Not To Change
 

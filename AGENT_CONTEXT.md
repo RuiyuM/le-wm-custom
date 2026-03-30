@@ -1,6 +1,6 @@
 # Agent Context
 
-Last updated: 2026-03-29 18:16 CDT
+Last updated: 2026-03-29 21:04 CDT
 
 Additional planning docs:
 
@@ -70,6 +70,14 @@ For the main rank-SIGReg ablations, the correct protocol is:
 
 The official full-data `TwoRoom` checkpoint can be used for quick exploratory
 pilots only, not for the main paper protocol.
+
+Current default execution assumption:
+
+- if the current `5/10/15/20%` full-rank subset jobs finish cleanly at `epoch 10`,
+  they should be reused as the warmup checkpoints for the first rank-only
+  ablation round
+- the first branch runs should then train for **10 additional epochs** from
+  those warmups
 
 ## Immediate Experimental Objective
 
