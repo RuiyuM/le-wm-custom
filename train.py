@@ -1,6 +1,6 @@
-import os
 from functools import partial
 from pathlib import Path
+import shutil
 
 import hydra
 import lightning as pl
@@ -9,19 +9,14 @@ import stable_pretraining as spt
 import stable_worldmodel as swm
 import torch
 from lightning.pytorch.loggers import WandbLogger
-from omegaconf import OmegaConf, open_dict
+from omegaconf import OmegaConf
 
-from jepa import JEPA
-from module import ARPredictor, Embedder, MLP, SIGReg
-from utils import (
-    get_column_normalizer,
-    get_img_preprocessor,
-    ModelObjectCallBack,
-    filter_dataset_by_episodes,
-)
+from experiment_utils import build_dataset_and_splits, build_world_model
+from module import SIGReg, SupportSubspaceProjector
+from utils import ModelObjectCallBack
 
 
-def lejepa_forward(self, batch, stage, cfg):
+def lejepa_forward(self, batch, stage, cfg, sigreg_projector=None):
     """encode observations, predict next states, compute losses."""
 
     ctx_len = cfg.wm.history_size
@@ -44,7 +39,10 @@ def lejepa_forward(self, batch, stage, cfg):
 
     # LeWM loss
     output["pred_loss"] = (pred_emb - tgt_emb).pow(2).mean()
-    output["sigreg_loss"]= self.sigreg(emb.transpose(0, 1))
+    emb_reg = emb.transpose(0, 1)
+    if sigreg_projector is not None:
+        emb_reg = sigreg_projector(emb_reg)
+    output["sigreg_loss"]= self.sigreg(emb_reg)
     output["loss"] = output["pred_loss"] + lambd * output["sigreg_loss"]  
 
     losses_dict = {f"{stage}/{k}": v.detach() for k, v in output.items() if "loss" in k}
@@ -57,101 +55,50 @@ def run(cfg):
     ##       dataset       ##
     #########################
 
-    dataset = swm.data.HDF5Dataset(**cfg.data.dataset, transform=None)
-    transforms = [get_img_preprocessor(source='pixels', target='pixels', img_size=cfg.img_size)]
-    selected_episodes = None
+    dataset, train_set, val_set, selected_episodes, rnd_gen = build_dataset_and_splits(cfg)
 
-    subset_cfg = cfg.get("subset")
-    if subset_cfg:
-        if subset_cfg.get("indices_file"):
-            indices_path = Path(subset_cfg.indices_file).expanduser().resolve()
-            if indices_path.suffix == ".npy":
-                selected_episodes = np.load(indices_path)
-            else:
-                selected_episodes = np.loadtxt(indices_path, dtype=np.int64)
-        elif subset_cfg.get("fraction") is not None:
-            total_episodes = len(dataset.lengths)
-            keep_count = max(1, int(round(total_episodes * float(subset_cfg.fraction))))
-            rng = np.random.default_rng(int(subset_cfg.get("seed", cfg.seed)))
-            selected_episodes = np.sort(
-                rng.choice(np.arange(total_episodes), size=keep_count, replace=False)
-            )
+    if selected_episodes is not None:
+        print(
+            f"Subset active: kept {len(selected_episodes)} episodes, "
+            f"{len(dataset)} clips."
+        )
 
-        if selected_episodes is not None:
-            dataset = filter_dataset_by_episodes(dataset, selected_episodes)
-            print(
-                f"Subset active: kept {len(selected_episodes)} episodes, "
-                f"{len(dataset)} clips."
-            )
-    
-    with open_dict(cfg):
-        for col in cfg.data.dataset.keys_to_load:
-            if col.startswith("pixels"):
-                continue
+    loader_cfg = dict(cfg.loader)
+    if int(loader_cfg.get("num_workers", 0)) == 0:
+        loader_cfg.pop("prefetch_factor", None)
+        loader_cfg["persistent_workers"] = False
 
-            normalizer = get_column_normalizer(dataset, col, col)
-            transforms.append(normalizer)
-
-            setattr(cfg.wm, f"{col}_dim", dataset.get_dim(col))
-
-    transform = spt.data.transforms.Compose(*transforms)
-    dataset.transform = transform
-
-    rnd_gen = torch.Generator().manual_seed(cfg.seed)
-    train_set, val_set = spt.data.random_split(
-        dataset, lengths=[cfg.train_split, 1 - cfg.train_split], generator=rnd_gen
+    train = torch.utils.data.DataLoader(
+        train_set,
+        **loader_cfg,
+        shuffle=True,
+        drop_last=True,
+        generator=rnd_gen,
     )
-
-    train = torch.utils.data.DataLoader(train_set, **cfg.loader,shuffle=True, drop_last=True, generator=rnd_gen)
-    val = torch.utils.data.DataLoader(val_set, **cfg.loader, shuffle=False, drop_last=False)
+    val = torch.utils.data.DataLoader(
+        val_set,
+        **loader_cfg,
+        shuffle=False,
+        drop_last=False,
+    )
     
     ##############################
     ##       model / optim      ##
     ##############################
 
-    encoder = spt.backbone.utils.vit_hf(
-        cfg.encoder_scale,
-        patch_size=cfg.patch_size,
-        image_size=cfg.img_size,
-        pretrained=False,
-        use_mask_token=False,
-    )
+    world_model = build_world_model(cfg)
 
-    hidden_dim = encoder.config.hidden_size
-    embed_dim = cfg.wm.get("embed_dim", hidden_dim)
-    effective_act_dim = cfg.data.dataset.frameskip * cfg.wm.action_dim
-
-    predictor = ARPredictor(
-        num_frames=cfg.wm.history_size,
-        input_dim=embed_dim,
-        hidden_dim=hidden_dim,
-        output_dim=hidden_dim,
-        **cfg.predictor,
-    )
-
-    action_encoder = Embedder(input_dim=effective_act_dim, emb_dim=embed_dim)
-    
-    projector = MLP(
-        input_dim=hidden_dim,
-        output_dim=embed_dim,
-        hidden_dim=2048,
-        norm_fn=torch.nn.BatchNorm1d,
-    )
-
-    predictor_proj = MLP(
-        input_dim=hidden_dim,
-        output_dim=embed_dim,
-        hidden_dim=2048,
-        norm_fn=torch.nn.BatchNorm1d,
-    )
-
-    world_model = JEPA(
-        encoder=encoder,
-        predictor=predictor,
-        action_encoder=action_encoder,
-        projector=projector,
-        pred_proj=predictor_proj,
-    )
+    sigreg_projector = None
+    subspace_cfg = cfg.get("subspace")
+    if subspace_cfg and subspace_cfg.get("enabled", False):
+        basis_path = subspace_cfg.get("basis_path")
+        if not basis_path:
+            raise ValueError("subspace.enabled=True requires subspace.basis_path")
+        sigreg_projector = SupportSubspaceProjector.from_artifact(
+            Path(basis_path).expanduser().resolve(),
+            rank=subspace_cfg.get("rank"),
+            center=subspace_cfg.get("center", True),
+        )
 
     optimizers = {
         'model_opt': {
@@ -166,7 +113,7 @@ def run(cfg):
     world_model = spt.Module(
         model = world_model,
         sigreg = SIGReg(**cfg.loss.sigreg.kwargs),
-        forward=partial(lejepa_forward, cfg=cfg),
+        forward=partial(lejepa_forward, cfg=cfg, sigreg_projector=sigreg_projector),
         optim=optimizers,
     )
 
@@ -188,6 +135,21 @@ def run(cfg):
     if selected_episodes is not None:
         np.save(run_dir / "subset_episode_indices.npy", selected_episodes)
 
+    target_ckpt_path = run_dir / f"{cfg.output_model_name}_weights.ckpt"
+    resume_ckpt_path = cfg.get("resume_ckpt_path")
+    if resume_ckpt_path:
+        resume_ckpt_path = Path(resume_ckpt_path).expanduser().resolve()
+        if not resume_ckpt_path.exists():
+            raise FileNotFoundError(f"resume_ckpt_path does not exist: {resume_ckpt_path}")
+        if target_ckpt_path.exists():
+            print(
+                f"Target checkpoint already exists at {target_ckpt_path}; "
+                f"ignoring resume_ckpt_path={resume_ckpt_path}."
+            )
+        elif resume_ckpt_path != target_ckpt_path:
+            shutil.copy2(resume_ckpt_path, target_ckpt_path)
+            print(f"Copied warmup checkpoint to {target_ckpt_path} for resume.")
+
     object_dump_callback = ModelObjectCallBack(
         dirpath=run_dir, filename=cfg.output_model_name, epoch_interval=1,
     )
@@ -195,7 +157,6 @@ def run(cfg):
     trainer = pl.Trainer(
         **cfg.trainer,
         callbacks=[object_dump_callback],
-        num_sanity_val_steps=1,
         logger=logger,
         enable_checkpointing=True,
     )
@@ -204,7 +165,7 @@ def run(cfg):
         trainer=trainer,
         module=world_model,
         data=data_module,
-        ckpt_path=run_dir / f"{cfg.output_model_name}_weights.ckpt",
+        ckpt_path=target_ckpt_path,
     )
 
     manager()

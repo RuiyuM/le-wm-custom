@@ -1,9 +1,11 @@
 defaults:
   - _self_
   - data: pusht
+  - subspace: "off"
 
 output_model_name: lewm
 subdir: ${hydra:job.id}
+resume_ckpt_path: null
 
 num_workers: 6
 train_split: 0.9
@@ -19,6 +21,7 @@ trainer:
   accelerator: gpu
   precision: bf16
   gradient_clip_val: 1.0
+  num_sanity_val_steps: 1
 
 loader:
   batch_size: 128

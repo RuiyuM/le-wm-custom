@@ -34,6 +34,58 @@ class SIGReg(torch.nn.Module):
         err = (x_t.cos().mean(-3) - self.phi).square() + x_t.sin().mean(-3).square()
         statistic = (err @ self.weights) * proj.size(-2)
         return statistic.mean() # average over projections and time
+
+
+class SupportSubspaceProjector(nn.Module):
+    """Project latent embeddings onto a fixed supported subspace.
+
+    This object is intentionally kept outside the Lightning module state dict so
+    warmup checkpoints without projector state can still be resumed cleanly.
+    """
+
+    def __init__(self, mean: torch.Tensor, basis: torch.Tensor, rank: int | None = None, center: bool = True):
+        super().__init__()
+
+        mean = torch.as_tensor(mean, dtype=torch.float32).reshape(-1).contiguous()
+        basis = torch.as_tensor(basis, dtype=torch.float32).contiguous()
+        if basis.ndim != 2:
+            raise ValueError(f"basis must have shape [D, R], got {tuple(basis.shape)}")
+        if basis.shape[0] != mean.shape[0]:
+            raise ValueError(
+                f"mean/basis dimension mismatch: mean={tuple(mean.shape)}, basis={tuple(basis.shape)}"
+            )
+
+        max_rank = basis.shape[1]
+        if rank is None:
+            rank = max_rank
+        if rank <= 0 or rank > max_rank:
+            raise ValueError(f"rank must be in [1, {max_rank}], got {rank}")
+
+        self.center = bool(center)
+        self.rank = int(rank)
+        self.mean = mean
+        self.basis = basis[:, : self.rank]
+
+    @classmethod
+    def from_artifact(cls, artifact_path, rank: int | None = None, center: bool = True):
+        artifact = torch.load(artifact_path, map_location="cpu", weights_only=True)
+        if "mean" not in artifact or "basis" not in artifact:
+            raise KeyError(
+                f"Subspace artifact at {artifact_path} must contain 'mean' and 'basis'."
+            )
+        return cls(
+            mean=artifact["mean"],
+            basis=artifact["basis"],
+            rank=rank,
+            center=center,
+        )
+
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        mean = self.mean.to(device=z.device, dtype=z.dtype)
+        basis = self.basis.to(device=z.device, dtype=z.dtype)
+        if self.center:
+            z = z - mean
+        return z @ basis
     
 class FeedForward(nn.Module):
     """FeedForward network used in Transformers"""

@@ -1,0 +1,5 @@
+enabled: true
+rank: 16
+basis_path: ???
+center: true
+mode: pca_fixed
