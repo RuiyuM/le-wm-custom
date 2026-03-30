@@ -1,9 +1,9 @@
 {
   "gpu_stats": {
-    "memory_free_mib": 12383,
+    "memory_free_mib": 20963,
     "memory_total_mib": 97251,
-    "memory_used_mib": 84868,
-    "util_pct": 65
+    "memory_used_mib": 76288,
+    "util_pct": 61
   },
   "jobs": {
     "eval__tworoom_rank_seed42_pct05_pca-r16_e20": {
@@ -25,15 +25,15 @@
       "label": "eval__tworoom_rank_seed42_pct05_pca-r16_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r16_e20.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 54752,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r16_e20.pid",
       "priority": 70,
       "retry_count": 0,
       "returncode": null,
       "run_name": "tworoom_rank_seed42_pct05_pca-r16_e20",
       "stage": "eval-branch",
-      "started_at": null,
-      "status": "pending",
+      "started_at": 1774854769.0191379,
+      "status": "running",
       "variant": "pca-r16"
     },
     "eval__tworoom_rank_seed42_pct05_pca-r32_e20": {
@@ -81,7 +81,7 @@
         "tworoom_rank_seed42_pct05_pca-r4_e20"
       ],
       "failure_reason": null,
-      "finished_at": null,
+      "finished_at": 1774854767.5170798,
       "label": "eval__tworoom_rank_seed42_pct05_pca-r4_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r4_e20.log",
       "needs_gpu": true,
@@ -89,11 +89,11 @@
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/eval__tworoom_rank_seed42_pct05_pca-r4_e20.pid",
       "priority": 70,
       "retry_count": 0,
-      "returncode": null,
+      "returncode": 0,
       "run_name": "tworoom_rank_seed42_pct05_pca-r4_e20",
       "stage": "eval-branch",
       "started_at": 1774851047.9100604,
-      "status": "running",
+      "status": "completed",
       "variant": "pca-r4"
     },
     "eval__tworoom_rank_seed42_pct05_pca-r8_e20": {
@@ -874,15 +874,15 @@
       "label": "pct15_fit-pca",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct15_fit-pca.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 70938,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/pct15_fit-pca.pid",
       "priority": 90,
       "retry_count": 0,
       "returncode": null,
       "run_name": null,
       "stage": "fit-pca",
-      "started_at": null,
-      "status": "pending",
+      "started_at": 1774857683.4091244,
+      "status": "running",
       "variant": null
     },
     "pct15_make-random": {
@@ -1107,7 +1107,7 @@
         "pct05_make-random"
       ],
       "failure_reason": null,
-      "finished_at": null,
+      "finished_at": 1774857208.2963462,
       "label": "tworoom_rank_seed42_pct05_pca-r8_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r8_e20.log",
       "needs_gpu": true,
@@ -1115,11 +1115,11 @@
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct05_pca-r8_e20.pid",
       "priority": 100,
       "retry_count": 0,
-      "returncode": null,
+      "returncode": 0,
       "run_name": "tworoom_rank_seed42_pct05_pca-r8_e20",
       "stage": "branch",
       "started_at": 1774850929.630965,
-      "status": "running",
+      "status": "completed",
       "variant": "pca-r8"
     },
     "tworoom_rank_seed42_pct05_random-r16_e20": {
@@ -1282,20 +1282,20 @@
       "deps": [
         "pct10_make-random"
       ],
-      "failure_reason": "oom",
+      "failure_reason": null,
       "finished_at": 1774853326.6091542,
       "label": "tworoom_rank_seed42_pct10_pca-r4_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r4_e20.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 68280,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r4_e20.pid",
       "priority": 80,
       "retry_count": 1,
-      "returncode": 1,
+      "returncode": null,
       "run_name": "tworoom_rank_seed42_pct10_pca-r4_e20",
       "stage": "branch",
-      "started_at": 1774852227.6041026,
-      "status": "pending",
+      "started_at": 1774857099.4862337,
+      "status": "running",
       "variant": "pca-r4"
     },
     "tworoom_rank_seed42_pct10_pca-r8_e20": {
@@ -1314,24 +1314,24 @@
         "20"
       ],
       "command_str": "env TRAIN_EXTRA_ARGS=+trainer.default_root_dir=/workspace/stablewm/tworoom_rank_seed42_pct10_pca-r8_e20 bash /workspace/le-wm-custom/scripts/run_tworoom_rank_ablation.sh branch pct10 pca-r8 0 tworoom_rank_seed42_pct10_warmup 20",
-      "cooldown_until": 1774853506.6103566,
+      "cooldown_until": 1774857770.4893394,
       "deps": [
         "pct10_make-random"
       ],
-      "failure_reason": "oom",
-      "finished_at": 1774853326.6100652,
+      "failure_reason": null,
+      "finished_at": 1774857590.4861977,
       "label": "tworoom_rank_seed42_pct10_pca-r8_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r8_e20.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 71529,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_pca-r8_e20.pid",
       "priority": 80,
-      "retry_count": 1,
-      "returncode": 1,
+      "retry_count": 2,
+      "returncode": null,
       "run_name": "tworoom_rank_seed42_pct10_pca-r8_e20",
       "stage": "branch",
-      "started_at": 1774852227.605295,
-      "status": "pending",
+      "started_at": 1774857809.8983946,
+      "status": "running",
       "variant": "pca-r8"
     },
     "tworoom_rank_seed42_pct10_random-r16_e20": {
@@ -1350,24 +1350,24 @@
         "20"
       ],
       "command_str": "env TRAIN_EXTRA_ARGS=+trainer.default_root_dir=/workspace/stablewm/tworoom_rank_seed42_pct10_random-r16_e20 bash /workspace/le-wm-custom/scripts/run_tworoom_rank_ablation.sh branch pct10 random-r16 0 tworoom_rank_seed42_pct10_warmup 20",
-      "cooldown_until": 1774853506.6108167,
+      "cooldown_until": 1774857969.6923175,
       "deps": [
         "pct10_make-random"
       ],
-      "failure_reason": "oom",
-      "finished_at": 1774853326.6105044,
+      "failure_reason": null,
+      "finished_at": 1774857789.6880515,
       "label": "tworoom_rank_seed42_pct10_random-r16_e20",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_random-r16_e20.log",
       "needs_gpu": true,
-      "pid": null,
+      "pid": 72477,
       "pid_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct10_random-r16_e20.pid",
       "priority": 80,
-      "retry_count": 1,
-      "returncode": 1,
+      "retry_count": 2,
+      "returncode": null,
       "run_name": "tworoom_rank_seed42_pct10_random-r16_e20",
       "stage": "branch",
-      "started_at": 1774852247.822518,
-      "status": "pending",
+      "started_at": 1774857974.591073,
+      "status": "running",
       "variant": "random-r16"
     },
     "tworoom_rank_seed42_pct10_warmup": {
@@ -1599,7 +1599,7 @@
       "cooldown_until": null,
       "deps": [],
       "failure_reason": null,
-      "finished_at": null,
+      "finished_at": 1774857683.405494,
       "label": "tworoom_rank_seed42_pct15_warmup",
       "log_path": "/workspace/stablewm/logs/tworoom_rank_ablation/tworoom_rank_seed42_pct15_warmup.log",
       "needs_gpu": true,
@@ -1611,7 +1611,7 @@
       "run_name": "tworoom_rank_seed42_pct15_warmup",
       "stage": "warmup",
       "started_at": 1774846916.4097168,
-      "status": "running",
+      "status": "completed",
       "variant": null
     },
     "tworoom_rank_seed42_pct20_pca-r16_e20": {
@@ -1830,5 +1830,5 @@
   "python_bin": "/workspace/le-wm-custom/.venv/bin/python",
   "repo_root": "/workspace/le-wm-custom",
   "stablewm_home": "/workspace/stablewm",
-  "timestamp": "2026-03-30T07:12:27Z"
+  "timestamp": "2026-03-30T08:07:57Z"
 }
