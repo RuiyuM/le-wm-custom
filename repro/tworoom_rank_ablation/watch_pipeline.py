@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import time
+import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
@@ -30,11 +31,19 @@ RESULTS_ROOT = REPO_ROOT / "repro" / "tworoom_rank_ablation" / "results" / "seed
 
 GPU_MAX_JOBS = int(os.environ.get("GPU_MAX_JOBS", "8"))
 GPU_LAUNCH_UTIL_MAX = int(os.environ.get("GPU_LAUNCH_UTIL_MAX", "90"))
+GPU_MEMORY_HEADROOM_MIB = int(os.environ.get("GPU_MEMORY_HEADROOM_MIB", str(6 * 1024)))
 POLL_SECONDS = int(os.environ.get("POLL_SECONDS", "20"))
 GIT_SYNC_ENABLED = os.environ.get("GIT_SYNC_ENABLED", "1") == "1"
 GITHUB_USER = os.environ.get("GITHUB_USER", "")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GIT_PUSH_RETRIES = int(os.environ.get("GIT_PUSH_RETRIES", "5"))
+RETRY_COOLDOWN_SECONDS = int(os.environ.get("RETRY_COOLDOWN_SECONDS", "180"))
+
+OOM_PATTERNS = (
+    re.compile(r"cuda out of memory", re.IGNORECASE),
+    re.compile(r"torch\\.OutOfMemoryError", re.IGNORECASE),
+    re.compile(r"\\boutofmemoryerror\\b", re.IGNORECASE),
+)
 
 BUDGETS = ("pct05", "pct10", "pct15", "pct20")
 VARIANTS = ("pca-r4", "pca-r8", "pca-r16", "pca-r32", "random-r16")
@@ -57,6 +66,9 @@ class Job:
     started_at: float | None = None
     finished_at: float | None = None
     adopted: bool = False
+    retry_count: int = 0
+    cooldown_until: float | None = None
+    failure_reason: str | None = None
 
     @property
     def pid_path(self) -> Path:
@@ -287,15 +299,30 @@ def gpu_stats() -> dict[str, int]:
         text=True,
     )
     used, free, util = [int(part.strip()) for part in result.stdout.splitlines()[0].split(",")]
-    return {"memory_used_mib": used, "memory_free_mib": free, "util_pct": util}
+    return {
+        "memory_used_mib": used,
+        "memory_free_mib": free,
+        "memory_total_mib": used + free,
+        "util_pct": util,
+    }
+
+
+def estimated_job_memory_mib(job: Job) -> int:
+    if job.stage == "fit-pca":
+        return 4 * 1024
+    if job.stage.startswith("eval"):
+        return 2 * 1024
+    if job.stage in {"warmup", "branch"}:
+        return 14 * 1024
+    return 0
 
 
 def min_free_mib(job: Job) -> int:
     if job.stage == "fit-pca":
         return 8 * 1024
     if job.stage.startswith("eval"):
-        return 14 * 1024
-    return 18 * 1024
+        return 4 * 1024
+    return 6 * 1024
 
 
 def max_eval_parallelism() -> int:
@@ -509,8 +536,7 @@ def refresh_finished_jobs(
             if job.stage.startswith("eval") or job.stage in {"fit-pca", "make-random"}:
                 sync_job_output_to_git(job, jobs)
         else:
-            job.status = "failed"
-            log(f"Failed {label} rc={rc}")
+            handle_failed_job(job)
         processes.pop(label, None)
 
 
@@ -528,8 +554,7 @@ def refresh_adopted_jobs(jobs: dict[str, Job]) -> None:
             if job.stage.startswith("eval") or job.stage in {"fit-pca", "make-random"}:
                 sync_job_output_to_git(job, jobs)
         else:
-            job.status = "failed"
-            log(f"Adopted job ended without expected outputs: {job.label}")
+            handle_failed_job(job)
 
 
 def refresh_completed_outputs(jobs: dict[str, Job]) -> None:
@@ -544,10 +569,23 @@ def refresh_completed_outputs(jobs: dict[str, Job]) -> None:
                 sync_job_output_to_git(job, jobs)
 
 
+def log_has_oom(log_path: Path) -> bool:
+    if not log_path.exists():
+        return False
+    try:
+        text = log_path.read_text(errors="ignore")[-20000:]
+    except OSError:
+        return False
+    return any(pattern.search(text) for pattern in OOM_PATTERNS)
+
+
 def ready_jobs(jobs: dict[str, Job]) -> list[Job]:
     ready: list[Job] = []
+    now = time.time()
     for job in jobs.values():
         if job.status != "pending":
+            continue
+        if job.cooldown_until is not None and job.cooldown_until > now:
             continue
         if all(jobs[dep].status == "completed" for dep in job.deps):
             ready.append(job)
@@ -573,6 +611,7 @@ def launch_job(job: Job, processes: dict[str, subprocess.Popen[str]]) -> None:
     env["STABLEWM_HOME"] = str(STABLEWM_HOME)
     env["PYTHON_BIN"] = str(PYTHON_BIN)
     env["PYTHONUNBUFFERED"] = "1"
+    env.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
     LOG_DIR.mkdir(parents=True, exist_ok=True)
     log(f"Launching {job.label}: {command_string(job.command)}")
     process = subprocess.Popen(
@@ -587,6 +626,8 @@ def launch_job(job: Job, processes: dict[str, subprocess.Popen[str]]) -> None:
     job.status = "running"
     job.started_at = time.time()
     job.pid = process.pid
+    job.returncode = None
+    job.failure_reason = None
     processes[job.label] = process
 
 
@@ -598,9 +639,42 @@ def should_launch_gpu_job(job: Job, jobs: dict[str, Job], stats: dict[str, int])
         return False
     if stats["memory_free_mib"] < min_free_mib(job):
         return False
+    projected_used = stats["memory_used_mib"] + estimated_job_memory_mib(job)
+    if projected_used + GPU_MEMORY_HEADROOM_MIB > stats["memory_total_mib"]:
+        return False
     if job.stage.startswith("eval") and active_eval_jobs >= max_eval_parallelism():
         return False
     return True
+
+
+def reserve_gpu_capacity(stats: dict[str, int], job: Job) -> dict[str, int]:
+    reserved = estimated_job_memory_mib(job)
+    total = stats["memory_total_mib"]
+    used = min(total, stats["memory_used_mib"] + reserved)
+    free = max(0, total - used)
+    return {
+        **stats,
+        "memory_used_mib": used,
+        "memory_free_mib": free,
+    }
+
+
+def handle_failed_job(job: Job) -> None:
+    job.finished_at = time.time()
+    if log_has_oom(job.log_path):
+        job.status = "pending"
+        job.retry_count += 1
+        job.cooldown_until = time.time() + RETRY_COOLDOWN_SECONDS
+        job.failure_reason = "oom"
+        job.pid = None
+        log(
+            f"OOM for {job.label}; requeueing with cooldown {RETRY_COOLDOWN_SECONDS}s "
+            f"(retry {job.retry_count})"
+        )
+        return
+    job.status = "failed"
+    job.failure_reason = "failed"
+    log(f"Failed {job.label} rc={job.returncode}")
 
 
 def all_done(jobs: dict[str, Job]) -> bool:
@@ -642,7 +716,7 @@ def main() -> int:
             if job.needs_gpu:
                 if should_launch_gpu_job(job, jobs, stats):
                     launch_job(job, processes)
-                    stats = gpu_stats()
+                    stats = reserve_gpu_capacity(stats, job)
             else:
                 launch_job(job, processes)
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "TwoRoom Rank Ablation Ops"
+  short_description: "Operate TwoRoom rank ablations on limited GPUs."
+  default_prompt: "Use this skill to launch, monitor, recover, and summarize TwoRoom static-rank ablation runs when warmup, fit-pca, branches, eval, and git syncing share constrained GPU capacity."
